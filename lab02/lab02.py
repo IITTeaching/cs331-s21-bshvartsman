@@ -102,10 +102,10 @@ def gen_passage(ngram_dict, length=100):
     passage = []
     sortedkeys = sorted(ngram_dict.keys())
     currentKey = random.choice(sortedkeys)
-    passage.append([currentKey])
+    passage.append(currentKey)
     while(len(passage) < length):
         randTuple = random.choice(ngram_dict[currentKey])
-        passage.append([randTuple])
+        passage.extend(randTuple)
         currentKey = randTuple[-1]
         if currentKey not in ngram_dict:
             currentKey = random.choice(sortedkeys)
