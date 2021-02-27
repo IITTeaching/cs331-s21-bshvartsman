@@ -192,52 +192,32 @@ def test2_2():
 #################################################################################
 class SuffixArray():
 
-    def cmpr(self, x, y):
-        smallStr, comp = 0, 0
-        if (len(x) > len(y)):
-            smallStr, comp = len(y), 1
-        else:
-            smallStr, comp = len(x), -1
-        if (x[0:smallStr] == y[0:smallStr]):
-            return 0
-        elif (x[0:smallStr] > y[0:smallStr]):
-            return 1
-        elif (x[0:smallStr] < y[0:smallStr]):
-            return -1
-        else:
-            return comp
-
-
     def __init__(self, document: str):
         """
         Creates a suffix array for document (a string).
         """
-        self.sufficeArray = []
+        self.sufficeArray = [i for i in range(len(document))]
         self.document = document
-        for i in range(len(document)):
-            self.sufficeArray.append(self.document[i:])
-        self.sufficeArray = mysort(self.sufficeArray, self.cmpr)
+        cmpr = lambda x,y: 0 if self.document[x:] == self.document[y:] else (-1 if self.document[x:] < self.document[y:] else 1)
+        self.sufficeArray = mysort(self.sufficeArray, cmpr)
 
 
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-        self.search = searchstr
         self.positionsList = []
-        while True:
-            index = mybinsearch(self.sufficeArray, self.search, self.cmpr)
-            if (index != -1 or index not in self.positionsList):
-                self.positionsList.append(index)
-            else:
-                break
+        cmpr = lambda x,y: 0 if self.document[x:x + len(searchstr)] == searchstr else (-1 if self.document[x:x+len(searchstr)] < searchstr else 1)
+        self.positionsList = [mybinsearch(self.sufficeArray, searchstr, cmpr)-1]
         return self.positionsList
+
 
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
         """
-        return (mybinsearch(self.sufficeArray, searchstr, self.cmpr) != -1)
+        cmpr = lambda x,y: 0 if self.document[x:x + len(searchstr)] == searchstr else (-1 if self.document[x:x+len(searchstr)] < searchstr else 1)
+        return (mybinsearch(self.sufficeArray, searchstr, cmpr) != -1)
 
 # 40 Points
 def test3():
