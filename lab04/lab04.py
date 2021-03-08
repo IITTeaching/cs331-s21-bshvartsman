@@ -89,7 +89,7 @@ class ArrayList:
         """Implements `x = self[idx]`"""
         assert(isinstance(idx, int))
         nidx = self._normalize_idx(idx)
-        if nidx >= len(self.data):
+        if nidx >= self.len:
             raise IndexError
         return self.data[nidx]
 
@@ -97,7 +97,7 @@ class ArrayList:
         """Implements `self[idx] = x`"""
         assert(isinstance(idx, int))
         nidx = self._normalize_idx(idx)
-        if nidx >= len(self.data):
+        if nidx >= self.len:
             raise IndexError
         self.data[nidx] = value
 
@@ -210,6 +210,7 @@ class ArrayList:
 
     def clear(self):
         self.data = ConstrainedList() # don't change this!
+        self.len = 0 # don't change this!
 
     def copy(self):
         """Returns a new ArrayList instance (with a separate data store), that
