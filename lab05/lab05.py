@@ -1,5 +1,6 @@
-from unittest import TestCase
 import random
+from unittest import TestCase
+
 
 ################################################################################
 # Linked list class you should implement
