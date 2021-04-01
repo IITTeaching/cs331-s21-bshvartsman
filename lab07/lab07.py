@@ -14,18 +14,49 @@ class ExtensibleHashTable:
 
     def find_bucket(self, key):
         # BEGIN_SOLUTION
+        h = hash(key) %self.n_buckets
+
+        while self.buckets[h] != None:
+            if self.buckets[h][0] == key:
+                return h
+            h +=1
+            if self.n_buckets == h:
+                h =0
+        return h
         # END_SOLUTION
 
     def __getitem__(self,  key):
         # BEGIN_SOLUTION
+        h = self.find_bucket(key)
+        if self.buckets[h] != None:
+            return self.buckets[h][1]
+        raise KeyError
         # END_SOLUTION
 
     def __setitem__(self, key, value):
         # BEGIN_SOLUTION
+        h = self.find_bucket(key)
+        self.buckets[h] = (key, value)
+        self.nitems +=1
+        if self.nitems / self.n_buckets >= self.fillfactor:
+            self.n_buckets *=2
+            b, i = [], 0
+
+            while i < len(self.buckets):
+                if self.buckets[i] != None:
+                    b.append(self.buckets[i])
+                i +=1
+            self.buckets = [None] * self.n_buckets
+            for bucket in b:
+                h = self.find_bucket(bucket[0])
+                self.buckets[h] = bucket
         # END_SOLUTION
 
     def __delitem__(self, key):
         # BEGIN SOLUTION
+        h = self.find_bucket(key)
+        self.buckets[h] = None
+        self.nitems -=1
         # END SOLUTION
 
     def __contains__(self, key):
@@ -43,6 +74,9 @@ class ExtensibleHashTable:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        for b in self.buckets:
+            if b:
+                yield b[0]
         ### END SOLUTION
 
     def keys(self):
@@ -50,10 +84,16 @@ class ExtensibleHashTable:
 
     def values(self):
         ### BEGIN SOLUTION
+        for b in range(self.n_buckets):
+            if self.buckets[b]:
+                yield self.buckets[b][1]
         ### END SOLUTION
 
     def items(self):
         ### BEGIN SOLUTION
+        for b in range(self.n_buckets):
+            if self.buckets[b]:
+                yield self.buckets[b]
         ### END SOLUTION
 
     def __str__(self):
